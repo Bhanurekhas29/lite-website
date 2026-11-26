@@ -9,3 +9,4 @@ backend/config/config.php
 backend/media/uploads/**/.tmp*
 frontend/vite.log
 !backend/database/schema.sql
+deployment-secrets.txt
