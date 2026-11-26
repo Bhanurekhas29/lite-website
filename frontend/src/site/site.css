@@ -1,6 +1,6 @@
 /*
   Public website styles. Mobile first: default = phones (up to 767px),
-  then 768px (tablet) and 1024px (desktop). The full menu needs 1200px.
+  then 768px (tablet) and 1024px (desktop). The full menu starts at 1100px.
 */
 .site { min-height: 100vh; display: flex; flex-direction: column; }
 .site-main { flex: 1; }
@@ -57,16 +57,23 @@ section[id] { scroll-margin-top: 96px; }
   .logo img { height: 56px; }
 }
 
-/* The full menu needs about 1190px, so it starts at 1280px and uses a wider header container. */
-@media (min-width: 1280px) {
-  .site-header .container { max-width: 1440px; padding-left: 24px; padding-right: 24px; }
-  .header-inner { height: 72px; }
-  .nav { display: flex; gap: 16px; margin: 0 auto; }
+/* The full menu starts at 1100px (compact), and gets roomier at 1280px. Zoomed-in screens fall in this range. */
+@media (min-width: 1100px) {
+  .site-header .container { max-width: 1440px; padding-left: 16px; padding-right: 16px; }
+  .header-inner { height: 72px; gap: 12px; }
+  .nav { display: flex; gap: 11px; margin: 0 auto; }
   .logo { margin-right: 0; }
-  .nav a { font-size: 12px; font-weight: 500; letter-spacing: .03em; text-transform: uppercase; color: var(--color-plum); padding: 6px 0; white-space: nowrap; }
-  .header-cta { white-space: nowrap; }
+  .logo img { height: 56px; }
+  .nav a { font-size: 11px; font-weight: 500; letter-spacing: .02em; text-transform: uppercase; color: var(--color-plum); padding: 6px 0; white-space: nowrap; }
+  .header-cta { white-space: nowrap; padding: 10px 16px; font-size: 13px; }
   .nav a:hover, .nav a.active { color: var(--color-primary); }
   .burger, .mobile-nav { display: none; }
+}
+@media (min-width: 1280px) {
+  .site-header .container { padding-left: 24px; padding-right: 24px; }
+  .nav { gap: 16px; }
+  .nav a { font-size: 12px; letter-spacing: .03em; }
+  .header-cta { padding: 11px 22px; font-size: 14px; }
   .logo img { height: 64px; }
 }
 
