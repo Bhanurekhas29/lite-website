@@ -8,10 +8,11 @@ import EnquiryDetail from './pages/EnquiryDetail.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import Media from './pages/Media.jsx'
 import PageEditor from './pages/PageEditor.jsx'
-import Placeholder from './pages/Placeholder.jsx'
 import ProjectEditor from './pages/ProjectEditor.jsx'
+import Profile from './pages/Profile.jsx'
 import Projects from './pages/Projects.jsx'
 import SettingsScreen from './pages/SettingsScreen.jsx'
+import Users from './pages/Users.jsx'
 
 function RequireAuth() {
   const { user } = useAuth()
@@ -42,9 +43,8 @@ export default function AdminRoutes() {
               <Route path="settings/contact" element={<SettingsScreen screen="contact" />} />
               <Route path="settings/seo" element={<SettingsScreen screen="seo" />} />
               <Route path="settings/email" element={<SettingsScreen screen="email" />} />
-              <Route path="users" element={<Placeholder title="Users" note="Super admin and other admins." />} />
-              <Route path="permissions" element={<Placeholder title="Permissions" note="Per-admin access. To be defined with you." />} />
-              <Route path="profile" element={<Placeholder title="Profile settings" note="Name, email, photo and password." />} />
+              <Route path="users" element={<Users />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/admin" replace />} />

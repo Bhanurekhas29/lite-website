@@ -17,6 +17,9 @@ require __DIR__ . '/src/EnquiryService.php';
 require __DIR__ . '/src/ProjectService.php';
 require __DIR__ . '/src/MediaLibrary.php';
 require __DIR__ . '/src/PasswordReset.php';
+require __DIR__ . '/src/Xlsx.php';
+require __DIR__ . '/src/AdminUsers.php';
+require __DIR__ . '/src/DashboardService.php';
 
 // Everything is stored in UTC. Screens convert to the time zone chosen in Settings.
 date_default_timezone_set('UTC');
@@ -141,6 +144,12 @@ try {
             $r['is_locked'] = (bool) $r['is_locked'];
         }
         Response::json(['pages' => $rows]);
+    } elseif ($route === 'GET /admin/dashboard') {
+        Response::json(DashboardService::overview($pdo));
+    } elseif ($route === 'POST /admin/profile/password') {
+        $b = Request::json();
+        Auth::changePassword($pdo, (int) $user['id'], (string) ($b['current_password'] ?? ''), (string) ($b['password'] ?? ''));
+        Response::json(['ok' => true]);
     } elseif ($route === 'GET /admin/overview') {
         $count = fn (string $sql): int => (int) $pdo->query($sql)->fetchColumn();
         $zone = $pdo->query("SELECT value_text FROM settings WHERE group_name = 'general' AND setting_key = 'timezone'")->fetchColumn();
@@ -200,8 +209,35 @@ try {
             $pdo,
             (string) ($_GET['status'] ?? 'all'),
             (string) ($_GET['q'] ?? ''),
-            (int) ($_GET['page'] ?? 1)
+            (int) ($_GET['page'] ?? 1),
+            (int) ($_GET['per_page'] ?? 20)
         ));
+    } elseif ($route === 'GET /admin/enquiries/export') {
+        $file = EnquiryService::exportXlsx($pdo, (string) ($_GET['status'] ?? 'all'), (string) ($_GET['q'] ?? ''));
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="enquiries-' . gmdate('Y-m-d') . '.xlsx"');
+        header('Content-Length: ' . strlen($file));
+        echo $file;
+        exit;
+    } elseif ($route === 'POST /admin/enquiries/delete') {
+        $ids = Request::json()['ids'] ?? null;
+        if (!is_array($ids)) {
+            throw new HttpException('Choose the enquiries to delete');
+        }
+        Response::json(['deleted' => EnquiryService::deleteMany($pdo, $ids)]);
+    } elseif ($route === 'GET /admin/users') {
+        Auth::requireSuper($user);
+        Response::json(['users' => AdminUsers::list($pdo)]);
+    } elseif ($route === 'POST /admin/users') {
+        Auth::requireSuper($user);
+        Response::json(['user' => AdminUsers::create($pdo, Request::json())], 201);
+    } elseif (preg_match('#^PUT /admin/users/(\d+)$#', $route, $m)) {
+        Auth::requireSuper($user);
+        Response::json(['user' => AdminUsers::update($pdo, (int) $m[1], Request::json(), (int) $user['id'])]);
+    } elseif (preg_match('#^DELETE /admin/users/(\d+)$#', $route, $m)) {
+        Auth::requireSuper($user);
+        AdminUsers::delete($pdo, (int) $m[1], (int) $user['id']);
+        Response::json(['ok' => true]);
     } elseif ($route === 'POST /admin/enquiries/mark-all-read') {
         Response::json(['updated' => EnquiryService::markAllRead($pdo)]);
     } elseif (preg_match('#^GET /admin/enquiries/(\d+)$#', $route, $m)) {

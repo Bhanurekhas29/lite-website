@@ -138,9 +138,9 @@ final class EnquiryService
         ];
     }
 
-    public static function list(PDO $pdo, string $status, string $q, int $page): array
+    /** The WHERE part shared by the list and the Excel export: [sql, params]. */
+    private static function filter(string $status, string $q): array
     {
-        $perPage = 20;
         $where = [];
         $params = [];
         if (in_array($status, ['new', 'read'], true)) {
@@ -153,7 +153,13 @@ final class EnquiryService
             $where[] = '(name LIKE ? OR email LIKE ? OR company LIKE ? OR event_location LIKE ? OR enquiry_type LIKE ? OR message LIKE ?)';
             array_push($params, $like, $like, $like, $like, $like, $like);
         }
-        $clause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+        return [$where ? 'WHERE ' . implode(' AND ', $where) : '', $params];
+    }
+
+    public static function list(PDO $pdo, string $status, string $q, int $page, int $perPage = 20): array
+    {
+        $perPage = in_array($perPage, [10, 20, 50, 100], true) ? $perPage : 20;
+        [$clause, $params] = self::filter($status, $q);
 
         $total = $pdo->prepare("SELECT COUNT(*) FROM enquiries $clause");
         $total->execute($params);
@@ -231,6 +237,54 @@ final class EnquiryService
     {
         self::row($pdo, $id);
         $pdo->prepare('DELETE FROM enquiries WHERE id = ?')->execute([$id]);
+    }
+
+    /** Delete several at once. Returns how many were removed. */
+    public static function deleteMany(PDO $pdo, array $ids): int
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), fn ($i) => $i > 0)));
+        if (!$ids || count($ids) > 500) {
+            throw new HttpException('Choose between 1 and 500 enquiries');
+        }
+        $stmt = $pdo->prepare('DELETE FROM enquiries WHERE id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')');
+        $stmt->execute($ids);
+        return $stmt->rowCount();
+    }
+
+    /** Every enquiry that matches the filter, as an Excel file (times shown in the time zone from Settings). */
+    public static function exportXlsx(PDO $pdo, string $status, string $q): string
+    {
+        [$clause, $params] = self::filter($status, $q);
+        $stmt = $pdo->prepare("SELECT * FROM enquiries $clause ORDER BY created_at DESC, id DESC LIMIT 20000");
+        $stmt->execute($params);
+
+        $tz = $pdo->query("SELECT value_text FROM settings WHERE group_name = 'general' AND setting_key = 'timezone'")->fetchColumn();
+        try {
+            $zone = new DateTimeZone($tz ?: 'Europe/London');
+        } catch (Throwable) {
+            $zone = new DateTimeZone('Europe/London');
+        }
+        $when = static function (?string $utc) use ($zone): string {
+            if (!$utc) {
+                return '';
+            }
+            return (new DateTimeImmutable($utc, new DateTimeZone('UTC')))->setTimezone($zone)->format('d M Y H:i');
+        };
+
+        $rows = [];
+        foreach ($stmt->fetchAll() as $r) {
+            $services = $r['services'] ? json_decode($r['services'], true) : [];
+            $rows[] = [
+                (string) $r['id'], $when($r['created_at']), $r['status'] === 'new' ? 'New' : 'Read',
+                $r['name'], (string) $r['company'], $r['email'], (string) $r['phone'],
+                (string) $r['enquiry_type'], (string) $r['event_timeframe'], (string) $r['event_location'], (string) $r['attendance'],
+                is_array($services) ? implode(', ', $services) : '', (string) $r['message'],
+                $r['consent_given'] ? 'Yes' : 'No',
+            ];
+        }
+        $headers = ['No.', 'Received', 'Status', 'Name', 'Company', 'Email', 'Telephone', 'Type of enquiry', 'Event date or timeframe',
+            'Event location', 'Approximate attendance', 'Services required', 'Message', 'Privacy consent'];
+        return Xlsx::build('Enquiries', $headers, $rows, [7, 17, 9, 22, 22, 28, 16, 26, 22, 30, 16, 36, 60, 12]);
     }
 
     /** Email the new enquiry to the recipient set in Email settings. Never blocks or fails the submission. */

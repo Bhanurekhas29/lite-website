@@ -9,10 +9,10 @@ RUN npm run build
 # ---- PHP + Apache: serves the website, the API and the images ----
 FROM php:8.3-apache
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libpng-dev libjpeg-dev libwebp-dev ca-certificates \
+ && apt-get install -y --no-install-recommends libpng-dev libjpeg-dev libwebp-dev libzip-dev ca-certificates \
  && rm -rf /var/lib/apt/lists/* \
  && docker-php-ext-configure gd --with-jpeg --with-webp \
- && docker-php-ext-install -j"$(nproc)" gd pdo_mysql \
+ && docker-php-ext-install -j"$(nproc)" gd pdo_mysql zip \
  && a2enmod headers rewrite
 COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/ports.conf /etc/apache2/ports.conf

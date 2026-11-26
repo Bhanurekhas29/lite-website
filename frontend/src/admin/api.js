@@ -39,3 +39,26 @@ export function uploadImage(file) {
   form.append('file', file)
   return send('/admin/media', { method: 'POST', headers: { 'X-Requested-With': 'fetch' }, body: form })
 }
+
+// Download a file the server creates (for example the Excel export) and save it.
+export async function downloadFile(path, fileName) {
+  const response = await fetch('/api' + path, { credentials: 'same-origin' })
+  if (!response.ok) {
+    let message = 'The download did not work. Try again.'
+    try {
+      message = (await response.json()).error || message
+    } catch {
+      // not JSON
+    }
+    throw new Error(message)
+  }
+  const blob = await response.blob()
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}

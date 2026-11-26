@@ -11,7 +11,6 @@ import {
   faHouse,
   faImage,
   faImages,
-  faLock,
   faMicrophone,
   faPalette,
   faPhone,
@@ -53,5 +52,4 @@ export const settingsItems = [
 
 export const accessItems = [
   { label: 'Users', to: '/admin/users', icon: faUsers },
-  { label: 'Permissions', to: '/admin/permissions', icon: faLock },
 ]

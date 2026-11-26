@@ -98,6 +98,33 @@ final class Auth
         }
     }
 
+    /** Change the signed-in admin's own password (the current one must be given). */
+    public static function changePassword(PDO $pdo, int $id, string $current, string $new): void
+    {
+        $stmt = $pdo->prepare('SELECT password_hash FROM admins WHERE id = ?');
+        $stmt->execute([$id]);
+        $hash = (string) $stmt->fetchColumn();
+        if ($current === '' || !password_verify($current, $hash)) {
+            usleep(600000);
+            throw new HttpException('Your current password is not correct');
+        }
+        if (hash_equals($current, $new)) {
+            throw new HttpException('Choose a password that is different from the current one');
+        }
+        PasswordReset::checkPassword($new);
+        $pdo->prepare('UPDATE admins SET password_hash = ? WHERE id = ?')->execute([password_hash($new, PASSWORD_DEFAULT), $id]);
+        $pdo->prepare('DELETE FROM password_resets WHERE admin_id = ?')->execute([$id]);
+    }
+
+    /** Stop with 403 unless the signed-in admin is the super admin. */
+    public static function requireSuper(array $user): void
+    {
+        if (empty($user['is_super'])) {
+            Response::json(['error' => 'Only the super admin can manage users'], 403);
+            exit;
+        }
+    }
+
     /** Stop with 401 unless an admin is signed in. */
     public static function require(PDO $pdo): array
     {
