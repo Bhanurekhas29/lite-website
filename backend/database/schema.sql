@@ -26,6 +26,21 @@ CREATE TABLE admins (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
+-- "Forgot password": one-hour reset links (only a hash of the link is stored)
+-- ---------------------------------------------------------------------
+CREATE TABLE password_resets (
+  id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  admin_id   INT UNSIGNED NOT NULL,
+  token_hash CHAR(64)     NOT NULL,
+  expires_at TIMESTAMP    NOT NULL,
+  created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_reset_token (token_hash),
+  KEY idx_reset_admin (admin_id, created_at),
+  CONSTRAINT fk_reset_admin FOREIGN KEY (admin_id) REFERENCES admins (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
 -- Media library (files live in backend/media, database stores the path)
 -- ---------------------------------------------------------------------
 CREATE TABLE media (

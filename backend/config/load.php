@@ -20,4 +20,6 @@ return [
     ],
     'allowed_origins' => array_values(array_filter(array_map('trim', explode(',', $env('ALLOWED_ORIGINS', ''))))),
     'app_key' => $env('APP_KEY'),
+    // The public address of the site (used in password reset emails). Optional.
+    'public_url' => $env('PUBLIC_URL'),
 ];

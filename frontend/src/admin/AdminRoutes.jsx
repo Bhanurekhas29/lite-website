@@ -27,6 +27,7 @@ export default function AdminRoutes() {
       <div className="adm">
         <Routes>
           <Route path="login" element={<LoginPage />} />
+          <Route path="reset-password" element={<LoginPage />} />
           <Route element={<RequireAuth />}>
             <Route element={<AdminLayout />}>
               <Route index element={<Dashboard />} />

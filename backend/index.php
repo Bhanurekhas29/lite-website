@@ -16,6 +16,7 @@ require __DIR__ . '/src/SettingsService.php';
 require __DIR__ . '/src/EnquiryService.php';
 require __DIR__ . '/src/ProjectService.php';
 require __DIR__ . '/src/MediaLibrary.php';
+require __DIR__ . '/src/PasswordReset.php';
 
 // Everything is stored in UTC. Screens convert to the time zone chosen in Settings.
 date_default_timezone_set('UTC');
@@ -90,6 +91,29 @@ try {
             throw new HttpException('Incorrect username, email or password', 401);
         }
         Response::json(['user' => Auth::publicFields($admin)]);
+        exit;
+    }
+    // ---- Forgot password (no sign-in needed) -----------------------------
+    if ($route === 'POST /admin/forgot-password') {
+        $identifier = trim((string) (Request::json()['identifier'] ?? ''));
+        if ($identifier === '') {
+            throw new HttpException('Enter your username or email');
+        }
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        $base = ($config['public_url'] ?? '') ?: (($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+        PasswordReset::request($pdo, mb_substr($identifier, 0, 190), $base);
+        usleep(random_int(200000, 500000));
+        Response::json(['ok' => true]);
+        exit;
+    }
+    if ($route === 'POST /admin/reset-password/check') {
+        Response::json(['valid' => PasswordReset::valid($pdo, (string) (Request::json()['token'] ?? ''))]);
+        exit;
+    }
+    if ($route === 'POST /admin/reset-password') {
+        $b = Request::json();
+        PasswordReset::reset($pdo, (string) ($b['token'] ?? ''), (string) ($b['password'] ?? ''));
+        Response::json(['ok' => true]);
         exit;
     }
     if ($route === 'POST /admin/logout') {
