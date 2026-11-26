@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+backend/config/config.php
+# Database exports can contain people's details: never commit them
+*.sql
+# Images added by the admin after launch are not code. The starter images that the
+# site needs to look right on first deploy are committed.
+backend/media/uploads/**/.tmp*
+frontend/vite.log

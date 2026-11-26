@@ -1,0 +1,35 @@
+/*
+  Design tokens from the E for Events style guide.
+  Breakpoints (mobile-first, use min-width):
+    tablet  : 768px and up
+    desktop : 1024px and up
+  Mobile is the default (up to 767px). CSS variables cannot be used inside
+  media queries, so write the numbers directly: @media (min-width: 768px)
+*/
+:root {
+  /* Colours */
+  --color-primary: #c2185b;       /* Primary Pink: buttons, links, accents */
+  --color-plum: #37182b;          /* Deep Plum: main headings */
+  --color-navy: #111827;          /* Navy Footer: footer and dark areas */
+  --color-blush-soft: #fff7f6;    /* Soft Blush: soft section backgrounds */
+  --color-blush-warm: #fef5f4;    /* Warm Blush: alternate backgrounds */
+  --color-white: #ffffff;         /* White: cards and surfaces */
+  --color-grey: #6b6570;          /* Body Grey: paragraph text */
+
+  /* Fonts */
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Layout */
+  --container-max: 1440px;
+  --gutter: 16px;
+  --radius: 12px;
+}
+
+@media (min-width: 768px) {
+  :root { --gutter: 32px; }
+}
+
+@media (min-width: 1024px) {
+  :root { --gutter: 32px; }
+}

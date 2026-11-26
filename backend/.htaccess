@@ -1,0 +1,8 @@
+# Production (Apache): send every non-file request to index.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+# Block direct access to config and source folders
+RedirectMatch 403 ^/(config|src|database)/
