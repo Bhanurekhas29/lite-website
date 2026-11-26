@@ -13,7 +13,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* \
  && docker-php-ext-configure gd --with-jpeg --with-webp \
  && docker-php-ext-install -j"$(nproc)" gd pdo_mysql \
- && a2enmod headers
+ && a2enmod headers rewrite
 COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/ports.conf /etc/apache2/ports.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
