@@ -8,3 +8,4 @@ backend/config/config.php
 # site needs to look right on first deploy are committed.
 backend/media/uploads/**/.tmp*
 frontend/vite.log
+!backend/database/schema.sql
