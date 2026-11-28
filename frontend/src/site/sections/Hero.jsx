@@ -12,7 +12,13 @@ export default function Hero({ section }) {
   const text = (
     <>
       <Eyebrow text={f.eyebrow} style={f.eyebrow_style} light={dark} center={center} />
-      <Heading as="h1" text={f.heading} accent={f.heading_accent} newLine={f.accent_new_line} />
+      <Heading as="h1" text={f.heading} accent={f.heading_accent} newLine={f.accent_new_line} className={f.tagline ? 'hero-h1' : ''} />
+      {f.tagline && (
+        <p className="heading hero-tagline">
+          {f.tagline}
+          {f.tagline_accent && <><br /><em>{f.tagline_accent}</em></>}
+        </p>
+      )}
       {f.subheading && <p className="hero-sub">{f.subheading}</p>}
       <div className="hero-text">
         <Paragraphs value={f.text1} className="hero-lead" />

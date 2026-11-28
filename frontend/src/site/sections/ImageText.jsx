@@ -36,7 +36,7 @@ function List({ style, items }) {
         {items.map((i) => (
           <li key={i.id}>
             <span className="feature-icon"><Icon name={i.fields.icon} aria-hidden="true" /></span>
-            <span>{label(i)}</span>
+            {style === 'pills' ? <h3 className="pill-title" title={i.fields.title && i.fields.text ? i.fields.text : undefined}>{label(i)}</h3> : <span>{label(i)}</span>}
           </li>
         ))}
       </ul>

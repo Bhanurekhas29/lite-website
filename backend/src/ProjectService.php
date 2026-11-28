@@ -31,6 +31,8 @@ final class ProjectService
             'event_year' => $r['event_year'] ?? '',
             'location' => $r['location'] ?? '',
             'our_role' => $r['our_role'] ?? '',
+            'summary' => $r['summary'] ?? '',
+            'image_alt' => $r['image_alt'] ?? '',
             'show_on_home' => (bool) $r['show_on_home'],
             'is_visible' => (bool) $r['is_visible'],
             'sort_order' => (int) $r['sort_order'],
@@ -120,6 +122,8 @@ final class ProjectService
             'event_year' => self::text($b['event_year'] ?? '', 20) ?: null,
             'location' => self::text($b['location'] ?? '', 150) ?: null,
             'our_role' => self::text($b['our_role'] ?? '', 255) ?: null,
+            'summary' => self::text($b['summary'] ?? '', 500) ?: null,
+            'image_alt' => self::text($b['image_alt'] ?? '', 255) ?: null,
             'show_on_home' => !empty($b['show_on_home']) ? 1 : 0,
             'is_visible' => !empty($b['is_visible']) ? 1 : 0,
             'services' => $services,
@@ -142,9 +146,9 @@ final class ProjectService
         try {
             $next = (int) $pdo->query('SELECT COALESCE(MAX(sort_order), 0) + 1 FROM projects')->fetchColumn();
             $pdo->prepare(
-                'INSERT INTO projects (category_id, title, image_media_id, hover_media_id, event_year, location, our_role, show_on_home, is_visible, sort_order)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            )->execute([$c['category_id'], $c['title'], $c['image_media_id'], $c['hover_media_id'], $c['event_year'], $c['location'], $c['our_role'], $c['show_on_home'], $c['is_visible'], $next]);
+                'INSERT INTO projects (category_id, title, image_media_id, hover_media_id, event_year, location, our_role, summary, image_alt, show_on_home, is_visible, sort_order)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            )->execute([$c['category_id'], $c['title'], $c['image_media_id'], $c['hover_media_id'], $c['event_year'], $c['location'], $c['our_role'], $c['summary'], $c['image_alt'], $c['show_on_home'], $c['is_visible'], $next]);
             $id = (int) $pdo->lastInsertId();
             self::writeServices($pdo, $id, $c['services']);
             $pdo->commit();
@@ -164,9 +168,9 @@ final class ProjectService
         $pdo->beginTransaction();
         try {
             $pdo->prepare(
-                'UPDATE projects SET category_id = ?, title = ?, image_media_id = ?, hover_media_id = ?, event_year = ?, location = ?, our_role = ?,
+                'UPDATE projects SET category_id = ?, title = ?, image_media_id = ?, hover_media_id = ?, event_year = ?, location = ?, our_role = ?, summary = ?, image_alt = ?,
                  show_on_home = ?, is_visible = ? WHERE id = ?'
-            )->execute([$c['category_id'], $c['title'], $c['image_media_id'], $c['hover_media_id'], $c['event_year'], $c['location'], $c['our_role'], $c['show_on_home'], $c['is_visible'], $id]);
+            )->execute([$c['category_id'], $c['title'], $c['image_media_id'], $c['hover_media_id'], $c['event_year'], $c['location'], $c['our_role'], $c['summary'], $c['image_alt'], $c['show_on_home'], $c['is_visible'], $id]);
             self::writeServices($pdo, $id, $c['services']);
             $pdo->commit();
         } catch (Throwable $e) {

@@ -12,6 +12,7 @@ require __DIR__ . '/src/MediaService.php';
 require __DIR__ . '/src/PublicService.php';
 require __DIR__ . '/src/Crypto.php';
 require __DIR__ . '/src/Mailer.php';
+require __DIR__ . '/src/EmailTemplate.php';
 require __DIR__ . '/src/SettingsService.php';
 require __DIR__ . '/src/EnquiryService.php';
 require __DIR__ . '/src/ProjectService.php';
@@ -194,12 +195,8 @@ try {
             throw new HttpException('Enter a valid email address to send the test to');
         }
         try {
-            Mailer::send(
-                SettingsService::smtp($pdo),
-                $to,
-                'Test email from your website',
-                "This is a test email from the E for Events admin panel.\r\n\r\nIf you can read this, your email settings work."
-            );
+            $mail = EmailTemplate::test();
+            Mailer::send(SettingsService::smtp($pdo), $to, 'Test email from your website', $mail['text'], $mail['html']);
         } catch (RuntimeException $e) {
             throw new HttpException($e->getMessage());
         }

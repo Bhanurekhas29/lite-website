@@ -40,18 +40,9 @@ final class PasswordReset
         )->execute([$admin['id'], hash('sha256', $token)]);
 
         $link = rtrim($baseUrl, '/') . '/admin/reset-password?token=' . $token;
-        $body = implode("\r\n", [
-            'Hello ' . $admin['display_name'] . ',',
-            '',
-            'Someone asked to reset the password for your E for Events admin account.',
-            'To choose a new password, open this link within ' . self::LIFETIME_MINUTES . ' minutes:',
-            '',
-            $link,
-            '',
-            'If you did not ask for this, you can ignore this email. Your password stays the same.',
-        ]);
+        $mail = EmailTemplate::passwordReset((string) $admin['display_name'], $link, self::LIFETIME_MINUTES);
         try {
-            Mailer::send(SettingsService::smtp($pdo), (string) $admin['email'], 'Reset your E for Events admin password', $body);
+            Mailer::send(SettingsService::smtp($pdo), (string) $admin['email'], 'Reset your E for Events admin password', $mail['text'], $mail['html']);
         } catch (Throwable $e) {
             // The page still answers the same way. The cause is only written to the server log.
             error_log('Password reset email not sent: ' . $e->getMessage());

@@ -5,7 +5,7 @@ declare(strict_types=1);
 final class Mailer
 {
     /** @param array{host:string,port:int,encryption:string,username:string,password:string,from_email:string,from_name:string} $c */
-    public static function send(array $c, string $to, string $subject, string $body): void
+    public static function send(array $c, string $to, string $subject, string $body, ?string $html = null, ?string $replyTo = null): void
     {
         foreach ([$to, $c['from_email']] as $address) {
             if (!filter_var($address, FILTER_VALIDATE_EMAIL)) {
@@ -52,10 +52,22 @@ final class Mailer
                 'Subject: =?UTF-8?B?' . base64_encode($clean($subject)) . '?=',
                 'Message-ID: <' . bin2hex(random_bytes(8)) . '@' . preg_replace('/^.*@/', '', $c['from_email']) . '>',
                 'MIME-Version: 1.0',
-                'Content-Type: text/plain; charset=UTF-8',
-                'Content-Transfer-Encoding: base64',
             ];
-            $message = implode("\r\n", $headers) . "\r\n\r\n" . chunk_split(base64_encode($body), 76, "\r\n");
+            if ($replyTo !== null && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+                $headers[] = "Reply-To: <$replyTo>";
+            }
+            if ($html !== null) {
+                // Both versions are sent; the email program shows the HTML one when it can.
+                $boundary = 'b' . bin2hex(random_bytes(12));
+                $headers[] = "Content-Type: multipart/alternative; boundary=\"$boundary\"";
+                $part = fn (string $type, string $content): string => "--$boundary\r\nContent-Type: $type; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($content), 76, "\r\n");
+                $payload = $part('text/plain', $body) . $part('text/html', $html) . "--$boundary--\r\n";
+            } else {
+                $headers[] = 'Content-Type: text/plain; charset=UTF-8';
+                $headers[] = 'Content-Transfer-Encoding: base64';
+                $payload = chunk_split(base64_encode($body), 76, "\r\n");
+            }
+            $message = implode("\r\n", $headers) . "\r\n\r\n" . $payload;
             fwrite($fp, $message . "\r\n.\r\n");
             self::expect($fp, [250]);
             @fwrite($fp, "QUIT\r\n");

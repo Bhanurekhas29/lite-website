@@ -25,7 +25,7 @@ export function defaultValue(spec) {
   }
 }
 
-function ImageField({ value, onChange }) {
+function ImageField({ value, onChange, noAlt }) {
   const [open, setOpen] = useState(false)
   return (
     <div className="adm-image-field">
@@ -42,11 +42,23 @@ function ImageField({ value, onChange }) {
           </button>
         )}
       </div>
+      {value && !noAlt && (
+        <label className="adm-alt-field">
+          <span className="adm-hint">Alt text for this picture (what the picture shows, for search engines and screen readers)</span>
+          <input
+            className="adm-input"
+            value={value.alt_custom ?? ''}
+            placeholder="Leave empty to use the description from the Media library"
+            maxLength={255}
+            onChange={(e) => onChange({ ...value, alt_custom: e.target.value, alt: e.target.value || value.alt })}
+          />
+        </label>
+      )}
       {open && (
         <MediaPicker
           onClose={() => setOpen(false)}
           onSelect={(m) => {
-            onChange({ id: m.id, url: m.url, alt: m.alt })
+            onChange({ id: m.id, url: m.url, alt: m.alt, alt_custom: '' })
             setOpen(false)
           }}
         />
@@ -264,7 +276,7 @@ export default function Field({ spec, value, onChange }) {
       )
       break
     case 'image':
-      control = <ImageField value={value} onChange={onChange} />
+      control = <ImageField value={value} onChange={onChange} noAlt={spec.noAlt} />
       break
     case 'icon':
       control = <IconPicker value={value} onChange={onChange} />

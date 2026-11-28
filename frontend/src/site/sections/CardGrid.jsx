@@ -9,7 +9,7 @@ function Card({ layout, item, index }) {
     return (
       <li className="icon-tile">
         <span className="feature-icon feature-icon-lg"><Icon name={f.icon} aria-hidden="true" /></span>
-        <p>{f.title}</p>
+        <h3>{f.title}</h3>
       </li>
     )
   }

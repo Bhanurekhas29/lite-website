@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { siteIcons } from '../../shared/icons.js'
-import { bgProps, Eyebrow, Heading } from '../components/ui.jsx'
+import { bgProps, Eyebrow, Heading, Paragraphs } from '../components/ui.jsx'
 import { useSite } from '../SiteContext.jsx'
 
 // Contact rows (from Settings > Contact and social) next to an image.
@@ -25,6 +25,7 @@ export default function ContactInfo({ section }) {
         <div className="split-text">
           <Eyebrow text={f.eyebrow} style={f.eyebrow_style} />
           <Heading text={f.heading} accent={f.heading_accent} newLine={f.accent_new_line} />
+          <Paragraphs value={f.intro} className="contact-intro" />
           <ul className="contact-rows">
             {rows.map((row) => (
               <li key={row.label}>

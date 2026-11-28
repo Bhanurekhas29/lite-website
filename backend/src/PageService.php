@@ -52,7 +52,9 @@ final class PageService
             'image' => $row['media_id'] ? [
                 'id' => (int) $row['media_id'],
                 'url' => self::mediaUrl($row['file_path']),
-                'alt' => $row['alt_text'],
+                // A description written for this one place wins over the library's.
+                'alt' => trim((string) ($row['value_text'] ?? '')) !== '' ? $row['value_text'] : $row['alt_text'],
+                'alt_custom' => $row['value_text'] ?? '',
             ] : null,
             'icon' => $row['icon'],
             'button', 'link', 'action' => [
@@ -238,6 +240,8 @@ final class PageService
                 if ($id > 0) {
                     self::mediaExists($pdo, $id);
                     $row['media_id'] = $id;
+                    $custom = mb_substr(trim((string) ($input['alt_custom'] ?? '')), 0, 255);
+                    $row['value_text'] = $custom !== '' ? $custom : null;
                 }
                 break;
             case 'icon':

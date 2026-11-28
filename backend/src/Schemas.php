@@ -59,6 +59,8 @@ final class Schemas
             'hero' => [
                 'label' => 'Hero banner',
                 'fields' => array_merge(self::eyebrow(), self::heading(), [
+                    ['key' => 'tagline', 'label' => 'Large display line under the heading (optional, not a heading tag)', 'type' => 'text'],
+                    ['key' => 'tagline_accent', 'label' => 'Pink italic part of that line (optional, shown on a new line)', 'type' => 'text'],
                     ['key' => 'subheading', 'label' => 'Subheading (bold line under the heading)', 'type' => 'text'],
                     ['key' => 'text1', 'label' => 'Paragraph 1', 'type' => 'textarea'],
                     ['key' => 'text2', 'label' => 'Paragraph 2', 'type' => 'textarea'],
@@ -177,12 +179,28 @@ final class Schemas
                 ], self::background()),
                 'items' => self::iconItem('Step', 8),
             ],
+            'faq' => [
+                'label' => 'Frequently asked questions',
+                'note' => 'Shown as an accordion. Search engines also read the questions and answers.',
+                'fields' => array_merge(self::eyebrow(), self::heading(), [
+                    ['key' => 'intro', 'label' => 'Intro paragraph (optional)', 'type' => 'textarea'],
+                ], self::background()),
+                'items' => [
+                    'label' => 'Question',
+                    'max' => 20,
+                    'fields' => [
+                        ['key' => 'question', 'label' => 'Question', 'type' => 'text'],
+                        ['key' => 'answer', 'label' => 'Answer', 'type' => 'textarea'],
+                    ],
+                ],
+            ],
             'video' => [
                 'label' => 'Video showcase',
                 'note' => 'Paste a YouTube or Vimeo link, or a direct link to an MP4 file. The video loads only when a visitor presses play.',
                 'fields' => array_merge(self::eyebrow(), self::heading(), [
                     ['key' => 'intro', 'label' => 'Intro paragraph', 'type' => 'textarea'],
                     ['key' => 'video_url', 'label' => 'Video link', 'type' => 'url'],
+                    ['key' => 'video_title', 'label' => 'Video title (read by screen readers and search engines, not shown on the page)', 'type' => 'text'],
                     ['key' => 'open_mode', 'label' => 'When a visitor clicks the video', 'type' => 'select', 'default' => 'inline',
                         'options' => ['inline' => 'Play it here on the page', 'newtab' => 'Open the video link in a new tab']],
                     ['key' => 'poster', 'label' => 'Cover image', 'type' => 'image'],
@@ -208,6 +226,7 @@ final class Schemas
                 'label' => 'Contact details with image',
                 'note' => 'The email, website, Instagram and phone number come from Settings > Contact and social.',
                 'fields' => array_merge(self::eyebrow(), self::heading(), [
+                    ['key' => 'intro', 'label' => 'Intro paragraph (optional)', 'type' => 'textarea'],
                     ['key' => 'image', 'label' => 'Image', 'type' => 'image'],
                 ], self::background()),
             ],
@@ -221,6 +240,7 @@ final class Schemas
                     ['key' => 'consent_after', 'label' => 'Consent text after the link', 'type' => 'text'],
                     ['key' => 'submit', 'label' => 'Send button', 'type' => 'action'],
                     ['key' => 'success', 'label' => 'Message after sending', 'type' => 'textarea'],
+                    ['key' => 'another_label', 'label' => 'Link text to send another enquiry', 'type' => 'text'],
                 ], self::background()),
                 'items' => [
                     'label' => 'Form field',
@@ -235,6 +255,7 @@ final class Schemas
                         ['key' => 'label', 'label' => 'Label', 'type' => 'text'],
                         ['key' => 'placeholder', 'label' => 'Placeholder text', 'type' => 'text'],
                         ['key' => 'help', 'label' => 'Small hint next to the label', 'type' => 'text'],
+                        ['key' => 'hint', 'label' => 'Helper text under the label (optional)', 'type' => 'text'],
                         ['key' => 'required', 'label' => 'Required', 'type' => 'toggle', 'default' => '0'],
                         ['key' => 'column', 'label' => 'Column on large screens', 'type' => 'select', 'default' => 'left',
                             'options' => ['left' => 'Left', 'right' => 'Right']],

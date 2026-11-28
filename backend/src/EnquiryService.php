@@ -297,14 +297,9 @@ final class EnquiryService
             if ($to === '') {
                 return;
             }
-            $lines = [
-                'A new enquiry was sent from the website.', '',
-                'Name: ' . $v['name'], 'Company: ' . $v['company'], 'Email: ' . $v['email'], 'Phone: ' . $v['phone'],
-                'Type of enquiry: ' . $v['enquiry_type'], 'Event date or timeframe: ' . $v['timeframe'],
-                'Event location: ' . $v['location'], 'Approximate attendance: ' . $v['attendance'],
-                'Services required: ' . implode(', ', $services), '', 'Message:', $v['message'],
-            ];
-            Mailer::send(SettingsService::smtp($pdo), $to, 'New enquiry from ' . $v['name'], implode("\r\n", $lines));
+            $mail = EmailTemplate::enquiry($v, $services);
+            // Replying to the email goes straight to the person who sent the enquiry.
+            Mailer::send(SettingsService::smtp($pdo), $to, 'New enquiry from ' . $v['name'], $mail['text'], $mail['html'], (string) $v['email']);
         } catch (Throwable $e) {
             error_log('Enquiry notification not sent: ' . $e->getMessage());
         }

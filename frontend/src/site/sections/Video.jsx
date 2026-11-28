@@ -48,7 +48,7 @@ export default function Video({ section }) {
             embed.type === 'iframe' ? (
               <iframe
                 src={embed.src}
-                title={f.heading || 'Video'}
+                title={f.video_title || f.heading || 'Video'}
                 allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
@@ -63,12 +63,12 @@ export default function Video({ section }) {
               {f.badge_left && <span className="video-badge video-badge-left"><i className="rec" /> {f.badge_left}</span>}
               {f.badge_right && <span className="video-badge video-badge-right">{f.badge_right}</span>}
               {newTab && (
-                <a className="video-open" href={f.video_url} target="_blank" rel="noopener noreferrer" aria-label={`Watch the video in a new tab${f.caption ? `: ${f.caption}` : ''}`}>
+                <a className="video-open" href={f.video_url} target="_blank" rel="noopener noreferrer" aria-label={f.video_title ? `${f.video_title} (opens in a new tab)` : `Watch the video in a new tab${f.caption ? `: ${f.caption}` : ''}`}>
                   <span className="video-play"><FontAwesomeIcon icon={siteIcons.play} /></span>
                 </a>
               )}
               {!newTab && embed && (
-                <button type="button" className="video-play" onClick={() => setPlaying(true)} aria-label={`Play video${f.caption ? `: ${f.caption}` : ''}`}>
+                <button type="button" className="video-play" onClick={() => setPlaying(true)} aria-label={f.video_title ? `Play: ${f.video_title}` : `Play video${f.caption ? `: ${f.caption}` : ''}`}>
                   <FontAwesomeIcon icon={siteIcons.play} />
                 </button>
               )}

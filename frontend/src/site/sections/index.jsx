@@ -2,6 +2,7 @@ import CardGrid from './CardGrid.jsx'
 import ContactInfo from './ContactInfo.jsx'
 import Cta from './Cta.jsx'
 import EnquiryForm from './EnquiryForm.jsx'
+import Faq from './Faq.jsx'
 import Hero from './Hero.jsx'
 import ImageCards from './ImageCards.jsx'
 import ImageText from './ImageText.jsx'
@@ -18,6 +19,7 @@ const components = {
   image_cards: ImageCards,
   image_text: ImageText,
   steps: Steps,
+  faq: Faq,
   video: Video,
   project_cards: ProjectCards,
   contact_info: ContactInfo,

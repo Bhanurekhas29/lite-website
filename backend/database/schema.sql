@@ -166,6 +166,8 @@ CREATE TABLE projects (
   event_year     VARCHAR(20)  NULL,
   location       VARCHAR(150) NULL,
   our_role       VARCHAR(255) NULL,
+  summary        VARCHAR(500) NULL,
+  image_alt      VARCHAR(255) NULL,
   show_on_home   TINYINT(1) NOT NULL DEFAULT 0,
   is_visible     TINYINT(1) NOT NULL DEFAULT 1,
   sort_order     INT NOT NULL DEFAULT 0,

@@ -27,6 +27,7 @@ function Project({ p, detailed }) {
               {p.location && <li><FontAwesomeIcon icon={siteIcons.location} aria-hidden="true" /> <b>Location:</b> {p.location}</li>}
               {p.role && <li><FontAwesomeIcon icon={siteIcons.user} aria-hidden="true" /> <b>Our Role:</b> {p.role}</li>}
             </ul>
+            {p.summary && <p className="project-summary">{p.summary}</p>}
             {p.services.length > 0 && (
               <div className="project-services">
                 <b>Services Provided:</b>

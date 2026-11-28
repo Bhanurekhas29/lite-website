@@ -138,11 +138,12 @@ final class PublicService
                 'title' => $r['title'],
                 'category' => $r['category'],
                 'category_icon' => $r['category_icon'],
-                'image' => $r['file_path'] ? ['url' => PageService::mediaUrl($r['file_path']), 'alt' => $r['alt_text']] : null,
+                'image' => $r['file_path'] ? ['url' => PageService::mediaUrl($r['file_path']), 'alt' => trim((string) $r['image_alt']) !== '' ? $r['image_alt'] : $r['alt_text']] : null,
                 'hover_image' => $r['hover_path'] ? ['url' => PageService::mediaUrl($r['hover_path']), 'alt' => $r['hover_alt']] : null,
                 'year' => $r['event_year'],
                 'location' => $r['location'],
                 'role' => $r['our_role'],
+                'summary' => $r['summary'],
                 'services' => array_column($services->fetchAll(), 'text'),
             ];
         }

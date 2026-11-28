@@ -32,6 +32,18 @@ export default function EnquiryForm({ section }) {
   const [errors, setErrors] = useState({}) // field key -> message, for every field that needs attention
   const dateRef = useRef(null)
 
+  // Back to an empty form, so a visitor can send a second enquiry without reloading the page.
+  const another = () => {
+    setValues({})
+    setServices([])
+    setConsent(false)
+    setTrap('')
+    setErrors({})
+    setMapOpen(false)
+    setState({ status: 'idle', error: '' })
+    requestAnimationFrame(() => document.getElementById(`section-${section.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+  }
+
   const clearError = (key) => setErrors((e) => (e[key] ? { ...e, [key]: undefined } : e))
   const set = (key, value) => {
     setValues((v) => ({ ...v, [key]: value }))
@@ -172,6 +184,7 @@ export default function EnquiryForm({ section }) {
         {item.fields.required && <span className="req" aria-hidden="true"> *</span>}
         {item.fields.help && <span className="form-help"> ({item.fields.help})</span>}
       </label>
+      {item.fields.hint && <p className="form-hint">{item.fields.hint}</p>}
       {control(item)}
       {errors[item.fields.field] && <p className="field-error" id={`enquiry-${item.fields.field}-error`} role="alert">{errors[item.fields.field]}</p>}
     </div>
@@ -194,6 +207,9 @@ export default function EnquiryForm({ section }) {
           <div className="form-success" role="status">
             <span className="check"><FontAwesomeIcon icon={siteIcons.check} aria-hidden="true" /></span>
             <Paragraphs value={f.success || 'Thank you. We have received your enquiry.'} />
+            <button type="button" className="btn btn-outline-dark form-another" onClick={another}>
+              <span>{f.another_label || 'Send another enquiry'}</span>
+            </button>
           </div>
         ) : (
           <form className="enquiry-form" onSubmit={submit} noValidate>

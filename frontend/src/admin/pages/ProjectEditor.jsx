@@ -9,7 +9,7 @@ import Toggle from '../components/Toggle.jsx'
 
 const MAX_SERVICES = 12
 const photoSpec = { key: 'image', label: 'Photo', type: 'image' }
-const hoverSpec = { key: 'hover_image', label: 'Hover photo (optional)', type: 'image', help: 'Shown on the Home page card when a visitor hovers over it. Leave empty for no change.' }
+const hoverSpec = { key: 'hover_image', label: 'Hover photo (optional)', type: 'image', noAlt: true, help: 'Shown on the Home page card when a visitor hovers over it. Leave empty for no change.' }
 
 // Turn the project from the API into editable form state (each service gets a stable key).
 let keySeed = 0
@@ -18,11 +18,12 @@ function toForm(p) {
   return {
     title: p.title,
     category_id: p.category_id,
-    image: p.image,
+    image: p.image ? { ...p.image, alt_custom: p.image_alt ?? '' } : null,
     hover_image: p.hover_image,
     event_year: p.event_year,
     location: p.location,
     our_role: p.our_role,
+    summary: p.summary ?? '',
     show_on_home: p.show_on_home,
     is_visible: p.is_visible,
     services: p.services.map((text) => ({ key: newKey(), text })),
@@ -50,7 +51,7 @@ export default function ProjectEditor() {
         const initial = isNew
           ? toForm({
               title: '', category_id: list.categories[0]?.id ?? '', image: null, hover_image: null, event_year: '', location: '',
-              our_role: '', show_on_home: false, is_visible: true, services: [''],
+              our_role: '', summary: '', show_on_home: false, is_visible: true, services: [''],
             })
           : toForm(one.project)
         setForm(initial)
@@ -95,7 +96,7 @@ export default function ProjectEditor() {
     setError('')
     setStatus('')
     try {
-      const body = { ...form, services: form.services.map((s) => s.text) }
+      const body = { ...form, image_alt: form.image?.alt_custom ?? '', services: form.services.map((s) => s.text) }
       const data = await api(isNew ? '/admin/projects' : `/admin/projects/${id}`, { method: isNew ? 'POST' : 'PUT', body })
       if (isNew) {
         navigate('/admin/projects', { replace: true })
@@ -162,6 +163,10 @@ export default function ProjectEditor() {
             <input className="adm-input" value={form.our_role} onChange={(e) => set({ our_role: e.target.value })} maxLength={255} placeholder="Event coordination and supplier liaison" />
           </label>
         </div>
+        <label className="adm-field">
+          <span className="adm-label">Short description (shown on the card)</span>
+          <textarea className="adm-input" rows={3} value={form.summary} onChange={(e) => set({ summary: e.target.value })} maxLength={500} placeholder="One or two sentences about the event and your part in it" />
+        </label>
 
         <Field spec={photoSpec} value={form.image} onChange={(image) => set({ image })} />
         <Field spec={hoverSpec} value={form.hover_image} onChange={(hover_image) => set({ hover_image })} />

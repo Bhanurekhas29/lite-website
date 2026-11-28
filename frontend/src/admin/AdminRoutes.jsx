@@ -12,6 +12,7 @@ import ProjectEditor from './pages/ProjectEditor.jsx'
 import Profile from './pages/Profile.jsx'
 import Projects from './pages/Projects.jsx'
 import SettingsScreen from './pages/SettingsScreen.jsx'
+import PageSeoList from './components/PageSeoList.jsx'
 import Users from './pages/Users.jsx'
 
 function RequireAuth() {
@@ -41,7 +42,7 @@ export default function AdminRoutes() {
               <Route path="media" element={<Media />} />
               <Route path="settings/brand" element={<SettingsScreen screen="brand" />} />
               <Route path="settings/contact" element={<SettingsScreen screen="contact" />} />
-              <Route path="settings/seo" element={<SettingsScreen screen="seo" />} />
+              <Route path="settings/seo" element={<><SettingsScreen screen="seo" /><PageSeoList /></>} />
               <Route path="settings/email" element={<SettingsScreen screen="email" />} />
               <Route path="users" element={<Users />} />
               <Route path="profile" element={<Profile />} />
