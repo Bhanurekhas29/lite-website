@@ -10,6 +10,7 @@ import ProjectCards from './ProjectCards.jsx'
 import Stats from './Stats.jsx'
 import Steps from './Steps.jsx'
 import Video from './Video.jsx'
+import VideoGrid from './VideoGrid.jsx'
 
 // Section type (set in the admin schema) -> the component that draws it.
 const components = {
@@ -21,6 +22,7 @@ const components = {
   steps: Steps,
   faq: Faq,
   video: Video,
+  video_grid: VideoGrid,
   project_cards: ProjectCards,
   contact_info: ContactInfo,
   enquiry_form: EnquiryForm,

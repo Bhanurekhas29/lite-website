@@ -27,12 +27,53 @@ function embedFor(link) {
   return null
 }
 
-export default function Video({ section }) {
-  const f = section.fields
+// One video: a cover picture with a play button. It plays on the page, or opens the link in a new tab.
+export function VideoPlayer({ f, name }) {
   const [playing, setPlaying] = useState(false)
   const embed = f.video_url ? embedFor(f.video_url) : null
-  const bg = bgProps(f)
   const newTab = f.open_mode === 'newtab' && /^https?:\/\//i.test(f.video_url || '')
+
+  return (
+    <div className="video">
+      {playing && embed ? (
+        embed.type === 'iframe' ? (
+          <iframe
+            src={embed.src}
+            title={f.video_title || name || 'Video'}
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        ) : (
+          <video src={embed.src} controls autoPlay playsInline />
+        )
+      ) : (
+        <>
+          {f.poster && <img className="video-poster" src={f.poster.url} alt={f.poster.alt} loading="lazy" />}
+          <div className="video-shade" />
+          {f.badge_left && <span className="video-badge video-badge-left"><i className="rec" /> {f.badge_left}</span>}
+          {f.badge_right && <span className="video-badge video-badge-right">{f.badge_right}</span>}
+          {newTab && (
+            <a className="video-open" href={f.video_url} target="_blank" rel="noopener noreferrer" aria-label={f.video_title ? `${f.video_title} (opens in a new tab)` : `Watch the video in a new tab${f.caption ? `: ${f.caption}` : ''}`}>
+              <span className="video-play"><FontAwesomeIcon icon={siteIcons.play} /></span>
+            </a>
+          )}
+          {!newTab && embed && (
+            <button type="button" className="video-play" onClick={() => setPlaying(true)} aria-label={f.video_title ? `Play: ${f.video_title}` : `Play video${f.caption ? `: ${f.caption}` : ''}`}>
+              <FontAwesomeIcon icon={siteIcons.play} />
+            </button>
+          )}
+          {(newTab || embed) && f.play_label && <span className="video-label">{f.play_label}</span>}
+          {f.caption && <span className="video-caption">{f.caption}</span>}
+        </>
+      )}
+    </div>
+  )
+}
+
+export default function Video({ section }) {
+  const f = section.fields
+  const bg = bgProps(f)
 
   return (
     <section className={`section section-soft${bg.className}`} style={bg.style} id={`section-${section.id}`}>
@@ -42,41 +83,7 @@ export default function Video({ section }) {
           <Heading text={f.heading} accent={f.heading_accent} newLine={f.accent_new_line} />
           <Paragraphs value={f.intro} className="section-intro" />
         </header>
-
-        <div className="video">
-          {playing && embed ? (
-            embed.type === 'iframe' ? (
-              <iframe
-                src={embed.src}
-                title={f.video_title || f.heading || 'Video'}
-                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                allowFullScreen
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
-            ) : (
-              <video src={embed.src} controls autoPlay playsInline />
-            )
-          ) : (
-            <>
-              {f.poster && <img className="video-poster" src={f.poster.url} alt={f.poster.alt} loading="lazy" />}
-              <div className="video-shade" />
-              {f.badge_left && <span className="video-badge video-badge-left"><i className="rec" /> {f.badge_left}</span>}
-              {f.badge_right && <span className="video-badge video-badge-right">{f.badge_right}</span>}
-              {newTab && (
-                <a className="video-open" href={f.video_url} target="_blank" rel="noopener noreferrer" aria-label={f.video_title ? `${f.video_title} (opens in a new tab)` : `Watch the video in a new tab${f.caption ? `: ${f.caption}` : ''}`}>
-                  <span className="video-play"><FontAwesomeIcon icon={siteIcons.play} /></span>
-                </a>
-              )}
-              {!newTab && embed && (
-                <button type="button" className="video-play" onClick={() => setPlaying(true)} aria-label={f.video_title ? `Play: ${f.video_title}` : `Play video${f.caption ? `: ${f.caption}` : ''}`}>
-                  <FontAwesomeIcon icon={siteIcons.play} />
-                </button>
-              )}
-              {(newTab || embed) && f.play_label && <span className="video-label">{f.play_label}</span>}
-              {f.caption && <span className="video-caption">{f.caption}</span>}
-            </>
-          )}
-        </div>
+        <VideoPlayer f={f} name={f.heading} />
       </div>
     </section>
   )

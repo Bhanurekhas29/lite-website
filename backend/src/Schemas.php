@@ -210,6 +210,29 @@ final class Schemas
                     ['key' => 'caption', 'label' => 'Caption below the video', 'type' => 'text'],
                 ], self::background()),
             ],
+            'video_grid' => [
+                'label' => 'Videos side by side',
+                'note' => 'Each video has its own card. Paste a YouTube or Vimeo link, or a direct link to an MP4 file. Videos load only when a visitor presses play.',
+                'fields' => array_merge(self::eyebrow(), self::heading(), [
+                    ['key' => 'intro', 'label' => 'Intro paragraph', 'type' => 'textarea'],
+                ], self::background()),
+                'items' => [
+                    'label' => 'Video',
+                    'max' => 6,
+                    'fields' => [
+                        ['key' => 'title', 'label' => 'Title shown under the video', 'type' => 'text'],
+                        ['key' => 'video_url', 'label' => 'Video link', 'type' => 'url'],
+                        ['key' => 'video_title', 'label' => 'Video title (read by screen readers and search engines, not shown on the page)', 'type' => 'text'],
+                        ['key' => 'open_mode', 'label' => 'When a visitor clicks the video', 'type' => 'select', 'default' => 'newtab',
+                            'options' => ['inline' => 'Play it here on the page', 'newtab' => 'Open the video link in a new tab']],
+                        ['key' => 'poster', 'label' => 'Cover image', 'type' => 'image'],
+                        ['key' => 'badge_left', 'label' => 'Label at the top left', 'type' => 'text'],
+                        ['key' => 'badge_right', 'label' => 'Label at the top right', 'type' => 'text'],
+                        ['key' => 'play_label', 'label' => 'Text beside the play button', 'type' => 'text'],
+                        ['key' => 'caption', 'label' => 'Caption on the video', 'type' => 'text'],
+                    ],
+                ],
+            ],
             'project_cards' => [
                 'label' => 'Project cards',
                 'note' => 'The cards come from the Projects module (built next). Projects marked "Show on Home" appear in the featured list.',
