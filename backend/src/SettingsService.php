@@ -50,10 +50,10 @@ final class SettingsService
                     self::f('contact.address', 'Address', 'textarea'),
                 ]],
                 ['title' => 'Social', 'fields' => [
-                    self::f('social.instagram', 'Instagram', 'text', ['help' => 'A handle such as @eforeventsuk.']),
-                    self::f('social.facebook', 'Facebook', 'url'),
-                    self::f('social.linkedin', 'LinkedIn', 'url'),
-                    self::f('social.whatsapp', 'WhatsApp number'),
+                    self::f('social.instagram', 'Instagram', 'text', ['help' => 'A handle such as @yourname, or the full link to the profile. Leave empty to hide the icon.']),
+                    self::f('social.facebook', 'Facebook', 'url', ['help' => 'The full link to the page, starting with https://. Leave empty to hide the icon.']),
+                    self::f('social.linkedin', 'LinkedIn', 'url', ['help' => 'The full link to the page or profile, starting with https://. Leave empty to hide the icon.']),
+                    self::f('social.whatsapp', 'WhatsApp number', 'text', ['help' => 'With the country code, for example +44 7700 900123. Leave empty to hide the icon.']),
                 ]],
                 ['title' => 'Time zone', 'fields' => [
                     self::f('general.timezone', 'Time zone', 'select', [

@@ -7,4 +7,5 @@ chown -R www-data:www-data /var/www/backend/media 2>/dev/null || true
 php /var/www/backend/database/migrate_image_updates.php || true
 php /var/www/backend/database/migrate_content_updates.php || true
 php /var/www/backend/database/migrate_our_work_videos.php || true
+php /var/www/backend/database/migrate_clear_social.php || true
 exec apache2-foreground

@@ -985,3 +985,14 @@ section[id] { scroll-margin-top: 96px; }
 .video-card { margin: 0; }
 .video-grid .video { max-width: none; }
 .video-card h3 { margin: 16px 0 0; text-align: center; font-size: 1.375rem; }
+
+/* Social media icons (shown only for the links filled in under Settings > Contact and social) */
+.social-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.social-links a { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; font-size: 17px; transition: background-color .25s ease, color .25s ease, transform .25s ease; }
+.footer-social { margin-top: 16px; }
+.site-footer .social-links a { background: rgba(255, 255, 255, .14); color: var(--color-white); }
+.site-footer .social-links a:hover { background: #ff4f9d; color: var(--color-white); transform: translateY(-3px); }
+.contact-social { margin-top: 6px; }
+.contact-social a { background: var(--color-primary); color: var(--color-white); }
+.contact-social a:hover { background: #a3144c; color: var(--color-white); transform: translateY(-3px); }
+@media (prefers-reduced-motion: reduce) { .social-links a { transition: none; } }

@@ -8,12 +8,12 @@ import {
   faShieldHalved, faSitemap, faSliders, faStar, faTicket, faTrophy, faTruck, faUserGear,
   faUserTie, faUsers, faUtensils, faVideo, faWandMagicSparkles,
   faCheck, faComments, faFileLines, faGear, faGlobe, faHandHoldingHeart, faPlay,
-  faCalendarDay, faUser, faBuildingColumns,
+  faCalendarDay, faUser, faBuildingColumns, faShareNodes,
 } from '@fortawesome/free-solid-svg-icons'
 import { faInstagram } from '@fortawesome/free-brands-svg-icons'
 
 // Icons used by the site itself (not offered in the admin icon picker).
-export const siteIcons = { play: faPlay, check: faCheck, globe: faGlobe, instagram: faInstagram, envelope: faEnvelope, phone: faPhone, calendar: faCalendarDay, location: faLocationDot, user: faUser }
+export const siteIcons = { play: faPlay, check: faCheck, globe: faGlobe, instagram: faInstagram, envelope: faEnvelope, phone: faPhone, calendar: faCalendarDay, location: faLocationDot, user: faUser, share: faShareNodes }
 
 // Icons the admin can choose from. The database stores the name (the key).
 // To offer another icon, import it above and add it here.

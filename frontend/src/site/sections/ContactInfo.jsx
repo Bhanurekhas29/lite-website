@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { siteIcons } from '../../shared/icons.js'
+import SocialLinks, { socialItems } from '../components/SocialLinks.jsx'
 import { bgProps, Eyebrow, Heading, Paragraphs } from '../components/ui.jsx'
 import { useSite } from '../SiteContext.jsx'
 
@@ -15,7 +16,6 @@ export default function ContactInfo({ section }) {
   const rows = [
     contact.email && { icon: siteIcons.envelope, label: 'Email', text: contact.email, href: `mailto:${contact.email}` },
     website && { icon: siteIcons.globe, label: 'Website', text: website, href: /^https?:/i.test(website) ? website : `https://${website}` },
-    social.instagram && { icon: siteIcons.instagram, label: 'Instagram', text: social.instagram, href: `https://www.instagram.com/${social.instagram.replace(/^@/, '')}` },
     contact.phone && { icon: siteIcons.phone, label: 'Phone', text: contact.phone, href: `tel:${contact.phone.replace(/\s+/g, '')}`, note: contact.phone_note },
   ].filter(Boolean)
 
@@ -37,6 +37,15 @@ export default function ContactInfo({ section }) {
                 </div>
               </li>
             ))}
+            {socialItems(social).length > 0 && (
+              <li>
+                <span className="contact-icon"><FontAwesomeIcon icon={siteIcons.share} aria-hidden="true" /></span>
+                <div>
+                  <span className="contact-label">Follow us</span>
+                  <SocialLinks className="contact-social" />
+                </div>
+              </li>
+            )}
             {contact.address && (
               <li>
                 <span className="contact-icon"><FontAwesomeIcon icon={siteIcons.location} aria-hidden="true" /></span>

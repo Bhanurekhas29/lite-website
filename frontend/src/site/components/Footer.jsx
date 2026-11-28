@@ -1,14 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useSite } from '../SiteContext.jsx'
-
-function instagramUrl(handle) {
-  return `https://www.instagram.com/${handle.replace(/^@/, '')}`
-}
+import SocialLinks from './SocialLinks.jsx'
 
 export default function Footer() {
   const { site } = useSite()
   if (!site) return <footer className="site-footer" />
-  const { brand, contact, social, menu } = site
+  const { brand, contact, menu } = site
   const website = contact.website
   const websiteUrl = /^https?:/i.test(website) ? website : `https://${website}`
 
@@ -41,11 +38,9 @@ export default function Footer() {
             {contact.email && <li>Email: <a href={`mailto:${contact.email}`}>{contact.email}</a></li>}
             {website && <li>Website: <a href={websiteUrl} target="_blank" rel="noopener noreferrer">{website}</a></li>}
             {contact.phone && <li>Phone: <a href={`tel:${contact.phone.replace(/\s+/g, '')}`}>{contact.phone}</a></li>}
-            {social.instagram && (
-              <li>Instagram: <a href={instagramUrl(social.instagram)} target="_blank" rel="noopener noreferrer">{social.instagram}</a></li>
-            )}
             {contact.address && <li>{contact.address}</li>}
           </ul>
+          <SocialLinks className="footer-social" />
         </div>
       </div>
 
