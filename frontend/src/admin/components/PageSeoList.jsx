@@ -6,7 +6,8 @@ function PageSeoRow({ initial, onSaved }) {
   const [draft, setDraft] = useState(initial)
   const [status, setStatus] = useState({ kind: '', text: '' })
   const [busy, setBusy] = useState(false)
-  const dirty = draft.seo_title !== initial.seo_title || draft.seo_description !== initial.seo_description
+  const keys = ['seo_title', 'seo_description', 'seo_keywords_primary', 'seo_keywords_secondary']
+  const dirty = keys.some((k) => draft[k] !== initial[k])
 
   async function save() {
     setBusy(true)
@@ -33,6 +34,16 @@ function PageSeoRow({ initial, onSaved }) {
         <span className="adm-label">Meta description <span className={`adm-count${draft.seo_description.length > 160 ? ' is-over' : ''}`}>{draft.seo_description.length} characters (about 155 is ideal)</span></span>
         <textarea className="adm-input" rows={3} value={draft.seo_description} maxLength={500} onChange={(e) => setDraft({ ...draft, seo_description: e.target.value })} />
       </label>
+      <div className="adm-grid-2">
+        <label className="adm-field">
+          <span className="adm-label">Primary keywords (optional)</span>
+          <input className="adm-input" value={draft.seo_keywords_primary} maxLength={500} onChange={(e) => setDraft({ ...draft, seo_keywords_primary: e.target.value })} />
+        </label>
+        <label className="adm-field">
+          <span className="adm-label">Secondary keywords (optional)</span>
+          <input className="adm-input" value={draft.seo_keywords_secondary} maxLength={500} onChange={(e) => setDraft({ ...draft, seo_keywords_secondary: e.target.value })} />
+        </label>
+      </div>
       <div className="adm-actions adm-actions-end">
         {status.text && <span className={status.kind === 'error' ? 'adm-status-error' : 'adm-status-ok'} role="status">{status.text}</span>}
         <button type="button" className="adm-btn adm-btn-outline" onClick={() => setDraft(initial)} disabled={!dirty || busy}>Discard</button>
@@ -68,7 +79,7 @@ export default function PageSeoList() {
       </div>
       {error && <p className="adm-error" role="alert">{error}</p>}
       {!pages && !error && <p className="adm-muted">Loading…</p>}
-      {pages?.map((p) => <PageSeoRow key={`${p.id}-${p.seo_title}-${p.seo_description}`} initial={p} onSaved={replace} />)}
+      {pages?.map((p) => <PageSeoRow key={`${p.id}-${p.seo_title}-${p.seo_description}-${p.seo_keywords_primary}-${p.seo_keywords_secondary}`} initial={p} onSaved={replace} />)}
     </section>
   )
 }
